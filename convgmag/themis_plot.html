@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script src="../plotly.min.js"></script>
+</head>
+
+<body>
+  <div id="myDiv" style="width: 1200px;height: 700px;">
+  </div>
+  <script>
+  
+  function makeplot(){
+  Plotly.d3.csv("./themis.csv",function(data){processData(data)});
+  };
+  
+  function processData(allRows){
+
+      console.log(allRows);
+      var xmag = [], ymag=[], zmag=[],dtime=[]
+      var etemp=[],stemp=[],gtemp=[],ngps=[]
+      for (var i=0; i<allRows.length;i++) {
+         row = allRows[i];
+         etemp.push( row['ETemp'] );
+         stemp.push( row['STemp'] );
+         gtemp.push( row['GTemp'] );
+         xmag.push( row['CH1'] );
+         ymag.push( row['CH2'] );
+         zmag.push( row['CH3'] );
+         ngps.push( row['GPS'] );
+         dtime.push( row['TIME'] );
+         }
+  console.log('time',dtime,'mag_x',xmag,'mag_y'.ymag,'mag_z',zmag);
+  makePlotly(xmag,ymag,zmag,dtime);
+  
+  };
+  function makePlotly( xmag,ymag,zmag,dtime) {
+
+  var plotDiv = document.getElementById("plot");
+  var trace1 = {
+       x: dtime,
+       y: xmag,
+       mode: 'lines',
+       name: 'X Field'
+       };
+  var trace2 = {
+       x: dtime,
+       y: ymag,
+       xaxis: 'x2',
+       yaxis: 'y2',
+       mode: 'lines',
+       name: 'Y Field'
+       };
+  var trace3 = {
+       x: dtime,
+       y: zmag,
+       xaxis: 'x3',
+       yaxis: 'y3',
+       mode: 'lines',
+       name: 'Z Field'
+       };
+  var data = [ trace1,trace2,trace3];
+
+  var layout = {
+       grid: {rows: 2 , columns: 3, pattern: 'independent'},
+       title: {text:'Falcon Magnetic Field vs Time (UTC)'},
+       xaxis: {title: {text:'Time'}},
+       xaxis2: {title: {text:'Time'}},
+       xasis3: {title: {text: 'Time'}},
+       yaxis: {title: {text:'nanoTesla'}},
+       yaxis2: {title: {text: 'nanoTesla'}},
+       yaxis3: {title: {text: 'nanoTesla'}}
+       };
+  Plotly.newPlot('myDiv',data,layout);
+  };
+
+  makeplot();
+  
+
+</script>
+
+</body>
+</html>
